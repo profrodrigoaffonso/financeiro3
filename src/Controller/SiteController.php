@@ -23,4 +23,37 @@ class SiteController extends AppController
         $formPayments = $this->Payments->FormPayments->find('list', ['limit' => 200]);
         $this->set(compact('payment', 'categories', 'formPayments'));
     }
+
+    public function login()
+    {
+
+        if ($this->request->is('post')) {
+            $this->loadModel('Users');
+            $dados = $this->request->getData();
+            $user = $this->Users->find()
+                ->where([
+                    'login' => $dados['login'],
+                    'password' => md5($dados['password'])
+                ])
+                ->first();
+            
+            if($user){
+                $session = $this->request->getSession();
+                $session->write('user', $user);
+
+                return $this->redirect(['controller' => 'payments', 'action' => 'index']);
+
+            }
+        }
+
+    }
+
+    public function logout()
+    {
+        $session = $this->request->getSession();
+        $session->delete('user');
+
+        return $this->redirect(['action' => 'login']);
+
+    }
 }

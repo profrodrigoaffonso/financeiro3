@@ -44,7 +44,22 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
 
+        $allowed = [
+            'Site/login',
+            'Site/inserir'
+        ];
+
         $session = $this->request->getSession();
+
+        $logged = $session->read('user');
+        // echo $this->request->getParam('controller');
+        if(!$logged){
+            $param = "{$this->request->getParam('controller')}/{$this->request->getParam('action')}";
+            // echo $param;
+            if(!in_array($param, $allowed)){
+                $this->redirect(['controller' => 'site', 'action' => 'login']);
+            }
+        }
 
         // $session->write('teste', 'teste');
 
