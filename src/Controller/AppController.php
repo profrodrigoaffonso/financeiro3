@@ -44,6 +44,13 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
 
+        $session = $this->request->getSession();
+
+        // $session->write('teste', 'teste');
+
+        //echo $session->delete('teste');
+
+        //echo $session->read('teste');
         /*
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
