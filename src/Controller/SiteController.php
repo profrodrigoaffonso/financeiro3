@@ -41,7 +41,7 @@ class SiteController extends AppController
                 $session = $this->request->getSession();
                 $session->write('user', $user);
 
-                return $this->redirect(['controller' => 'payments', 'action' => 'index']);
+                return $this->redirect(['controller' => 'site', 'action' => 'painel']);
 
             }
         }
@@ -54,6 +54,11 @@ class SiteController extends AppController
         $session->delete('user');
 
         return $this->redirect(['action' => 'login']);
+
+    }
+
+    public function painel()
+    {
 
     }
 }
