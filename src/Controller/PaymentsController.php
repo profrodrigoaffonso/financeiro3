@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
  * Payments Controller
  *
@@ -108,5 +111,104 @@ class PaymentsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function export()
+    {
+
+        $meses = [
+            1 => "Janeiro",
+            2 => "Feveiro",
+            3 => "Março",
+            4 => "Abril",
+            5 => "Maio",
+            6 => "Junho",
+            7 => "Julho",
+            8 => "Agosto",
+            9 => "Setembro",
+            10 => "Outubro",
+            11 => "Novembro",
+            12 => "Dezembro",
+        ];
+
+        $anos = [
+            date('Y') - 1 => date('Y') - 1,
+            date('Y') => date('Y')
+        ];
+
+        if($this->request->is('post')){
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $dados = $this->request->getData();
+
+            $sheet->setCellValueByColumnAndRow(1, 1, "Categoria");
+            $sheet->setCellValueByColumnAndRow(2, 1, "Valor");
+            $sheet->setCellValueByColumnAndRow(3, 1, "Forma de pagamento");
+            $sheet->setCellValueByColumnAndRow(4, 1, "Data");
+            $sheet->setCellValueByColumnAndRow(5, 1, "Hora");
+            $sheet->setCellValueByColumnAndRow(6, 1, "Obs");
+
+            $payments = $this->Payments->find()
+                ->contain(["Categories","FormPayments"])
+                ->where([
+                    'MONTH(date_time)' => $dados['mes'],
+                    'YEAR(date_time)' => $dados['ano'],
+                ])
+                ->order([
+                    "Categories.name"=>"ASC",
+                    "Payments.date_time"=>"ASC"
+                ]);
+
+            $i = 2;
+
+            $cat_ant = 1;
+            $nome_ant = "";
+
+            foreach ($payments as $key => $payment) {
+                // echo($payment->date_time);die;
+                //debug($payment->category->name);
+                //echo $payment->category->name;
+                if($cat_ant != $payment->category->id){
+                    $sheet->setCellValueByColumnAndRow(1, $i, $nome_ant);
+                    $i++;
+                }
+
+                $sheet->setCellValueByColumnAndRow(1, $i, $payment->category->name);
+                $sheet->setCellValueByColumnAndRow(2, $i, $payment->value);
+                $sheet->setCellValueByColumnAndRow(3, $i, $payment->form_payment->name);
+                $sheet->setCellValueByColumnAndRow(4, $i, date('d/m/Y', strtotime(h($payment->date_time))));
+                $sheet->setCellValueByColumnAndRow(5, $i, date('H:i', strtotime(h($payment->date_time))));
+                $sheet->setCellValueByColumnAndRow(6, $i, $payment->obs); 
+
+                $cat_ant = $payment->category->id; 
+                $nome_ant =  $payment->category->name;      
+
+                $i++;
+            }
+
+            $sheet->setCellValueByColumnAndRow(1, $i, $nome_ant);
+
+            // die;
+            //$sheet->setCellValueByColumnAndRow(1, $i, $nome_ant);
+
+            $writer = new Xlsx($spreadsheet);
+
+            $file = WWW_ROOT."excel".DS.uniqid().".xlsx";
+            $writer->save($file);                
+
+            $response = $this->response->withFile(
+                $file,
+                ['download' => true, 'name' => 'Export.xlsx']
+            );
+
+            //unlink($file);
+
+            return $response;
+
+        }
+
+        $this->set(compact(['meses','anos']));
+
     }
 }
