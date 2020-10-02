@@ -10,7 +10,7 @@
         <div class="payments form content">
             <?= $this->Form->create() ?>
             <fieldset>
-                <legend><?= __('Add Payment') ?></legend>
+                <legend><?= __('Login') ?></legend>
                 <?php
                     echo $this->Form->control('login');
                     echo $this->Form->control('password');

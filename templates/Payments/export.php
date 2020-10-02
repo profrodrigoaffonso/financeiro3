@@ -15,7 +15,7 @@
         <div class="payments form content">
             <?= $this->Form->create() ?>
             <fieldset>
-                <legend><?= __('Add Payment') ?></legend>
+                <legend><?= __('Exportar') ?></legend>
                 <?php
                     echo $this->Form->control('mes', ['options' => $meses, 'empty' => true]);
                     echo $this->Form->control('ano', ['options' => $anos, 'empty' => true]);
