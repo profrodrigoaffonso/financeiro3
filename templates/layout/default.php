@@ -38,7 +38,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 <body>
     <nav class="top-nav">
         <div class="top-nav-title">
-            <a href="<?= $this->Url->build('/site/painel') ?>"><span>Cake</span>PHP</a>
+            <a href="<?= $this->Url->build('/site/painel') ?>"><span>Painel</span></a>
         </div>
         <div class="top-nav-links">
             <a rel="noopener" href="/site/logout">Logout</a>
