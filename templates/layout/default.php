@@ -53,6 +53,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </div>
     </main>
     <footer>
+    <div id="teste"></div>
     </footer>
 </body>
 </html>

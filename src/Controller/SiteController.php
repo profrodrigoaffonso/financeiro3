@@ -12,6 +12,7 @@ class SiteController extends AppController
         $payment = $this->Payments->newEmptyEntity();
         if ($this->request->is('post')) {
             $payment = $this->Payments->patchEntity($payment, $this->request->getData());
+            $payment->value = str_replace(',', '.', $payment->value);
             if ($this->Payments->save($payment)) {
                 $this->Flash->success(__('The payment has been saved.'));
 

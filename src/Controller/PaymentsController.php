@@ -6,6 +6,9 @@ namespace App\Controller;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 /**
  * Payments Controller
  *
@@ -194,7 +197,7 @@ class PaymentsController extends AppController
 
             $writer = new Xlsx($spreadsheet);
 
-            $file = WWW_ROOT."excel".DS.uniqid().".xlsx";
+            $file = WWW_ROOT."excel".DS."arquivo.xlsx";
             $writer->save($file);                
 
             $response = $this->response->withFile(
@@ -209,6 +212,30 @@ class PaymentsController extends AppController
         }
 
         $this->set(compact(['meses','anos']));
+
+    }
+
+    public function pdf()
+    {
+
+
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+
+        $dompdf->loadHtml('hello world');
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream();
+
+
+        die;
 
     }
 }

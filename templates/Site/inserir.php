@@ -14,7 +14,7 @@
                 <?php
                     echo $this->Form->control('category_id', ['options' => $categories, 'empty' => true, 'required']);
                     echo $this->Form->control('form_payment_id', ['options' => $formPayments, 'empty' => true, 'required']);
-                    echo $this->Form->control('value', [ 'required']);
+                    echo $this->Form->control('value', ['type' => 'text', 'required']);
                     echo $this->Form->control('date_time', ['value' => date('Y-m-d H:i:00')]);
                     echo $this->Form->control('obs');
                 ?>
@@ -24,3 +24,7 @@
         </div>
     </div>
 </div>
+<?= $this->Html->script(['jquery.js', 'jquery.mask.min']) ?>
+<script>
+    $('#value').mask('0000,00', {reverse: true});
+</script>
