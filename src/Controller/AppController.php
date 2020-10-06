@@ -45,8 +45,10 @@ class AppController extends Controller
         $this->loadComponent('Flash');
 
         $allowed = [
+            'Site/index',
             'Site/login',
-            'Site/inserir'
+            'Site/inserir',
+            'Site/saques'
         ];
 
         $session = $this->request->getSession();

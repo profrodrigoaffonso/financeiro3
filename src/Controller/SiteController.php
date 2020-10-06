@@ -6,6 +6,11 @@ use App\Controller\AppController;
 class SiteController extends AppController
 {
 
+    public function index()
+    {
+
+    }
+
     public function inserir()
     {
         $this->loadModel('Payments');
@@ -23,6 +28,24 @@ class SiteController extends AppController
         $categories = $this->Payments->Categories->find('list', ['limit' => 200]);
         $formPayments = $this->Payments->FormPayments->find('list', ['limit' => 200]);
         $this->set(compact('payment', 'categories', 'formPayments'));
+    }
+
+    public function saques(){
+        $this->loadModel('Withdrawals');
+        $withdrawal = $this->Withdrawals->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $dados = $this->request->getData();
+            $dados['value'] = str_replace(',', '.', $dados['value']);
+            $withdrawal = $this->Withdrawals->patchEntity($withdrawal, $dados);
+            if ($this->Withdrawals->save($withdrawal)) {
+                $this->Flash->success(__('The withdrawal has been saved.'));
+
+                return $this->redirect(['action' => 'saques']);
+            }
+            $this->Flash->error(__('The withdrawal could not be saved. Please, try again.'));
+        }
+        $banks = $this->Withdrawals->Banks->find('list', ['limit' => 200]);
+        $this->set(compact('withdrawal', 'banks'));
     }
 
     public function login()
